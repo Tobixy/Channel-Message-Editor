@@ -2,7 +2,7 @@ import os
 import logging
 from dotenv import load_dotenv
 from pyrogram import Client
-
+from run import bot 
 load_dotenv()
 
 # Set up logging to track potential issues
