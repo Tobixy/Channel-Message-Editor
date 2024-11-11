@@ -11,9 +11,9 @@ logger = logging.getLogger(__name__)
 
 Bot = Client(
     "Channel Message Editor Bot",
-    bot_token=os.environ.get("BOT_TOKEN"),
-    api_id=int(os.environ.get("API_ID")),
-    api_hash=os.environ.get("API_HASH")
+    bot_token=os.environ.get("BOT_TOKEN", "6240482331:AAHEnRNj-XmNOIXSgOeZc8i1cbqiyTB1AkE"),
+    api_id=int(os.environ.get("API_ID", "28374181")),
+    api_hash=os.environ.get("API_HASH", "00b7ca7f535e816590db39e76f85d0c7")
 )
 
 if __name__ == "__main__":
