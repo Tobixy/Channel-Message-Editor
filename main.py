@@ -1,26 +1,5 @@
-import os
-import logging
-from dotenv import load_dotenv
-from pyrogram import Client, filters
+from pyrogram import filters
 from pyrogram.types import InlineKeyboardMarkup, InlineKeyboardButton
-
-# Load environment variables
-load_dotenv()
-
-# Set up logging to track potential issues
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
-
-# Initialize the bot client
-Bot = Client(
-    "Channel Message Editor Bot",
-    bot_token=os.environ.get("BOT_TOKEN", "6240482331:AAHEnRNj-XmNOIXSgOeZc8i1cbqiyTB1AkE"),
-    api_id=int(os.environ.get("API_ID", "28374181")),
-    api_hash=os.environ.get("API_HASH", "00b7ca7f535e816590db39e76f85d0c7")
-)
-
-# Authorized users
-AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "5715764478").split())
 
 # Bot messages and buttons
 START_TEXT = """Hello {},
@@ -89,8 +68,6 @@ ERROR_BUTTON = InlineKeyboardMarkup(
     ]
 )
 
-logger.info("Bot is starting...")
-
 @Bot.on_callback_query()
 async def cb_data(bot, update):
     if update.from_user.id not in AUTH_USERS:
@@ -104,7 +81,6 @@ async def cb_data(bot, update):
             reply_markup=START_BUTTONS,
             disable_web_page_preview=True
         )
-        logger.info("Sent home message")
 
     elif update.data == "help":
         await update.message.edit_text(
@@ -112,7 +88,6 @@ async def cb_data(bot, update):
             reply_markup=HELP_BUTTONS,
             disable_web_page_preview=True
         )
-        logger.info("Sent help message")
     
     elif update.data == "about":
         await update.message.edit_text(
@@ -120,7 +95,6 @@ async def cb_data(bot, update):
             reply_markup=ABOUT_BUTTONS,
             disable_web_page_preview=True
         )
-        logger.info("Sent about message")
     
     else:
         await update.message.delete()
@@ -128,7 +102,6 @@ async def cb_data(bot, update):
 @Bot.on_message(filters.private & filters.command(["start"]))
 async def start(bot, update):
     if update.from_user.id not in AUTH_USERS:
-        logger.info(f"Unauthorized user: {update.from_user.id}")
         return
     
     await update.reply_text(
@@ -136,7 +109,6 @@ async def start(bot, update):
         disable_web_page_preview=True,
         reply_markup=START_BUTTONS
     )
-    logger.info("Sent start message")
 
 @Bot.on_message(filters.private & filters.reply & filters.command(["post"]), group=1)
 async def post(bot, update):
@@ -155,7 +127,6 @@ async def post(bot, update):
             await update.reply_text("You can't do that")
             return
     except Exception as e:
-        logger.error(f"Error getting chat member: {e}")
         return
     
     try:
@@ -172,9 +143,7 @@ async def post(bot, update):
                 [[InlineKeyboardButton(text="Post", url=post_link)]]
             )
         )
-        logger.info("Message posted successfully")
     except Exception as e:
-        logger.error(f"Error posting message: {e}")
         await update.reply_text(str(e))
 
 @Bot.on_message(filters.private & filters.reply & filters.command(["edit"]), group=2)
@@ -203,7 +172,6 @@ async def edit(bot, update):
             await update.reply_text("You can't do that, User needed can_be_edited permission.")
             return
     except Exception as e:
-        logger.error(f"Error getting chat member: {e}")
         await update.reply_text(str(e))
         return
     
@@ -216,18 +184,8 @@ async def edit(bot, update):
                 reply_markup=update.reply_to_message.reply_markup,
                 disable_web_page_preview=True
             )
-            logger.info("Message edited successfully")
         except Exception as e:
-            logger.error(f"Error editing message: {e}")
             await update.reply_text(str(e))
     else:
         await update.reply_text("I can edit text only")
-
-# Run the bot
-if __name__ == "__main__":
-    try:
-        logger.info("Running bot...")
-        Bot.run()
-    except Exception as e:
-        logger.error(f"Error occurred: {e}")
 
