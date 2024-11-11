@@ -8,10 +8,11 @@ load_dotenv()
 
 Bot = Client(
     "Channel Message Editor Bot",
-    bot_token=os.environ["BOT_TOKEN", "6240482331:AAHEnRNj-XmNOIXSgOeZc8i1cbqiyTB1AkE"],
-    api_id=int(os.environ["API_ID", "28374181"]),
-    api_hash=os.environ["API_HASH", "00b7ca7f535e816590db39e76f85d0c7"]
+    bot_token=os.environ.get("BOT_TOKEN", "6240482331:AAHEnRNj-XmNOIXSgOeZc8i1cbqiyTB1AkE"),
+    api_id=int(os.environ.get("API_ID", "28374181")),
+    api_hash=os.environ.get("API_HASH", "00b7ca7f535e816590db39e76f85d0c7")
 )
+
 
 AUTH_USERS = set(int(x) for x in os.environ.get("AUTH_USERS", "5715764478").split())
 
